@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>People Management</title>
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<h1>People List</h1>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Age</th>
+  </tr>
+  <tr th:each="person : ${people}">
+    <td th:text="${person.id}"></td>
+    <td th:text="${person.name}"></td>
+    <td th:text="${person.age}"></td>
+  </tr>
+</table>
+
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

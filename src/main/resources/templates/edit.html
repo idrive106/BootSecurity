@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Редактирование пользователя</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .container {
+      width: 60%;
+      margin: 0 auto;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 15px;
+      font-size: 14px;
+      text-decoration: none;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-green {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .btn-green:hover {
+      background-color: #218838;
+    }
+
+    .btn-red {
+      background-color: #ff4d4d;
+      color: white;
+    }
+
+    .btn-red:hover {
+      background-color: #cc0000;
+    }
+
+    input[type="text"], input[type="number"] {
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      width: 100%;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 20px auto;
+      text-align: left;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .buttons a, .buttons button {
+      width: 45%;
+    }
+
+  </style>
+</head>
+<body>
+
+<h1>Редактировать пользователя</h1>
+
+<div class="container">
+  <form th:action="@{/users/edit}" th:object="${user}" method="post">
+    <input type="hidden" th:field="*{id}">
+
+    <label for="name">Имя:</label>
+    <input type="text" id="name" th:field="*{name}" required><br><br>
+
+    <label for="age">Возраст:</label>
+    <input type="number" id="age" th:field="*{age}" required><br><br>
+
+    <label for="salary">Зарплата:</label>
+    <input type="number" id="salary" th:field="*{salary}" required><br><br>
+
+    <div class="buttons">
+      <a href="/users" class="btn btn-red">Назад</a>
+      <button type="submit" class="btn btn-green">Сохранить изменения</button>
+    </div>
+  </form>
+</div>
+
+</body>
+</html>

@@ -10,10 +10,10 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String name; // Должно содержать "ROLE_ADMIN" или "ROLE_USER"
 
     @Override
     public String getAuthority() {
-        return name;
+        return name; // Возвращает "ROLE_ADMIN" или "ROLE_USER"
     }
 }

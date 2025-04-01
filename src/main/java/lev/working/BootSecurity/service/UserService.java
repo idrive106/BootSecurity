@@ -1,6 +1,6 @@
 package lev.working.BootSecurity.service;
 
-import lev.working.BootSecurity.model.User;
+import lev.working.BootSecurity.model.People;
 import lev.working.BootSecurity.repositories.UserRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,24 +21,24 @@ public class UserService{
         this.userRepositories = userRepositories;
     }
 
-    public List<User> findAll() {
+    public List<People> findAll() {
         return userRepositories.findAll();
     }
 
-    public User findOne(Long id) {
-        Optional<User> foundPerson = userRepositories.findById(id);
+    public People findById(Long id) {
+        Optional<People> foundPerson = userRepositories.findById(id);
         return foundPerson.orElse(null);
     }
 
     @Transactional
-    public void save(User user) {
-        userRepositories.save(user);
+    public void save(People people) {
+        userRepositories.save(people);
     }
 
     @Transactional
-    public void update(Long id, User updatedUser) {
-        updatedUser.setId(id);
-        userRepositories.save(updatedUser);
+    public void update(Long id, People updatedPeople) {
+        updatedPeople.setId(id);
+        userRepositories.save(updatedPeople);
     }
 
     @Transactional
@@ -47,7 +47,7 @@ public class UserService{
     }
 
     @Transactional
-    public User findByUsername(String username) {
+    public People findByUsername(String username) {
         return userRepositories.findByName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

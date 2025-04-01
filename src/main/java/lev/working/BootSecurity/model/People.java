@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 @Entity
-public class User implements UserDetails {
+public class People implements UserDetails {
 
 
     @Id
@@ -30,7 +30,7 @@ public class User implements UserDetails {
     @Column(nullable = false, name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -42,7 +42,7 @@ public class User implements UserDetails {
         return id;
     }
 
-    public User() {
+    public People() {
     }
 
     public void setId(Long id) {
@@ -91,8 +91,8 @@ public class User implements UserDetails {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return age == user.age && Double.compare(salary, user.salary) == 0 && Objects.equals(id, user.id) && Objects.equals(name, user.name);
+        People people = (People) o;
+        return age == people.age && Double.compare(salary, people.salary) == 0 && Objects.equals(id, people.id) && Objects.equals(name, people.name);
     }
 
     @Override

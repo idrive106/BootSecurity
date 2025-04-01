@@ -1,7 +1,7 @@
 package lev.working.BootSecurity.controller;
 
 
-import lev.working.BootSecurity.model.User;
+import lev.working.BootSecurity.model.People;
 import lev.working.BootSecurity.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,14 +29,14 @@ public class PeopleController {
 
     @GetMapping("/users/add")
     public String showAddUserForm(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new People());
         return "/add";
     }
 
     @PostMapping("/users/add")
-    public String addUser(@ModelAttribute("user") User user, Model model) {
+    public String addUser(@ModelAttribute("user") People people, Model model) {
         try {
-            userService.save(user);
+            userService.save(people);
             return "redirect:/users";
         } catch (RuntimeException e) {
             model.addAttribute("error", "Ошибка при добавлении пользователя");
@@ -52,18 +52,18 @@ public class PeopleController {
 
     @GetMapping("/users/edit")
     public String showEditUserForm(@RequestParam Long id, Model model) {
-        User user = userService.findOne(id);
-        if (user != null) {
-            model.addAttribute("user", user);
+        People people = userService.findById(id);
+        if (people != null) {
+            model.addAttribute("user", people);
             return "/edit";
         }
         return "redirect:/users";
     }
 
     @PostMapping("/users/edit")
-    public String editUser(@ModelAttribute User user, @RequestParam Long id) {
+    public String editUser(@ModelAttribute People people, @RequestParam Long id) {
         try {
-            userService.update(id,user);
+            userService.update(id, people);
         } catch (RuntimeException e) {
 
             return "/edit";

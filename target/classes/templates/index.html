@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список пользователей</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            font-size: 14px;
+            text-decoration: none;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn-green {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-green:hover {
+            background-color: #218838;
+        }
+        .btn-red {
+            background-color: #ff4d4d;
+            color: white;
+        }
+        .btn-red:hover {
+            background-color: #cc0000;
+        }
+        .btn-yellow {
+            background-color: #ffc107;
+            color: white;
+        }
+        .btn-yellow:hover {
+            background-color: #e0a800;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<h1>Список пользователей</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Возраст</th>
+        <th>Зарплата</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="person : ${people}">
+        <td th:text="${person.id}"></td>
+        <td th:text="${person.name}"></td>
+        <td th:text="${person.age}"></td>
+        <td th:text="${person.salary}"></td>
+        <td>
+            <form th:action="@{/users/delete}" method="post" style="display:inline;">
+                <input type="hidden" name="id" th:value="${person.id}">
+                <button type="submit" class="btn btn-red" onclick="return confirm('Удалить пользователя?')">Удалить</button>
+            </form>
+
+            <a th:href="@{/users/edit(id=${person.id})}" class="btn btn-yellow">Изменить</a>
+
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+<form action="/users/add" method="get" style="display:inline;">
+    <button type="submit" class="btn btn-green">➕ Добавить пользователя</button>
+</form>
+
+</body>
+</html>

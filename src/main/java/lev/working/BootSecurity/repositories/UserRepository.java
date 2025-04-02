@@ -1,15 +1,13 @@
 package lev.working.BootSecurity.repositories;
 
-
-import lev.working.BootSecurity.model.People;
+import lev.working.BootSecurity.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepositories extends JpaRepository<People, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<People> findByName(String name);
-
+    Optional<User> findByName(String name);
 }

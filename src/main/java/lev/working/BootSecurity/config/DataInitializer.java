@@ -14,15 +14,16 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Создание стандартных ролей
-        Role userRole = new Role();
-        userRole.setName("ROLE_USER");
+        if (roleRepository.findByName("ROLE_USER").isEmpty()) {
+            Role userRole = new Role();
+            userRole.setName("ROLE_USER");
+            roleRepository.save(userRole);
+        }
 
-        Role adminRole = new Role();
-        adminRole.setName("ROLE_ADMIN");
-
-        // Сохранение ролей в базу данных
-        roleRepository.save(userRole);
-        roleRepository.save(adminRole);
+        if (roleRepository.findByName("ROLE_ADMIN").isEmpty()) {
+            Role adminRole = new Role();
+            adminRole.setName("ROLE_ADMIN");
+            roleRepository.save(adminRole);
+        }
     }
 }

@@ -15,10 +15,15 @@ public class SuccessUserHandler implements AuthenticationSuccessHandler {
         boolean isUser = authentication.getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_USER"));
 
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+
         if (isUser) {
             response.sendRedirect("/user");
+        } else if (isAdmin) {
+            response.sendRedirect("/admin"); // Добавляем редирект для админов
         } else {
-            response.sendRedirect("/");
+            response.sendRedirect("/login"); // В случае, если роль не определена
         }
     }
 }

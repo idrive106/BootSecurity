@@ -3,8 +3,9 @@ package lev.working.BootSecurity.models;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -14,11 +15,15 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name", unique = true)
     private String name;
 
 
     @ManyToMany(mappedBy = "roles")
-    private Set<User> user = new HashSet<>();
+    private List<User> users;
+
+    public Role() {
+    }
 
     public Long getId() {
         return id;
@@ -37,7 +42,19 @@ public class Role implements GrantedAuthority {
     }
 
     @Override
-    public String getAuthority() {
+    public String getAuthority() { // Исправлено
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(id, role.id) && Objects.equals(name, role.name) && Objects.equals(users, role.users);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, users);
     }
 }

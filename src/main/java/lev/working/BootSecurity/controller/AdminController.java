@@ -46,7 +46,7 @@ public class AdminController {
     public String delete(@RequestParam("id") Long id, Model model) {
         model.addAttribute("user", userService.findById(id));
         userService.delete(id);
-        return "redirect:index";
+        return "redirect:/index";
     }
 
     @GetMapping("/update")

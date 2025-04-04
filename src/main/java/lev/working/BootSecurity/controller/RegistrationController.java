@@ -45,4 +45,9 @@ public class RegistrationController {
         model.addAttribute("user", userService.getCurrentUser());
         return "user";
     }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
 }

@@ -2,9 +2,11 @@ package lev.working.BootSecurity.models;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class User implements UserDetails {
@@ -14,16 +16,16 @@ public class User implements UserDetails {
     private Long id;
 
     private String name;
-    private String function;
+    private String jobFunction;
     private int salary;
     private String password;
 
-    public String getFunction() {
-        return function;
+    public String getJobFunction() {
+        return jobFunction;
     }
 
-    public void setFunction(String function) {
-        this.function = function;
+    public void setJobFunction(String function) {
+        this.jobFunction = function;
     }
 
     public int getSalary() {
@@ -37,10 +39,13 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private List<Role> roles;
+
+    public User() {
+    }
 
     public Long getId() {
         return id;
@@ -76,8 +81,11 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public String getUsername() {
@@ -102,5 +110,17 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return salary == user.salary && Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(jobFunction, user.jobFunction) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, jobFunction, salary, password, roles);
     }
 }

@@ -1,7 +1,6 @@
 package lev.working.BootSecurity.service;
 
 
-import lev.working.BootSecurity.config.SecurityConfig;
 import lev.working.BootSecurity.models.Role;
 import lev.working.BootSecurity.models.User;
 import lev.working.BootSecurity.repositories.UserRepository;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +21,13 @@ public class UserService{
 
     private final RoleService roleService;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(RoleService roleService, UserRepository userRepository) {
+    public UserService(RoleService roleService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.roleService = roleService;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> findAll() {
@@ -63,7 +65,7 @@ public class UserService{
             user.setRoles(roles);
         }
 
-        user.setPassword(SecurityConfig.passwordEncoder().encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -71,9 +73,9 @@ public class UserService{
     public void update(User updatedUser, List<Long> roles ,Long id) {
         User updUser = findById(id);
         updUser.setName(updatedUser.getName());
-        updUser.setFunction(updatedUser.getFunction());
+        updUser.setJobFunction(updatedUser.getJobFunction());
         updUser.setSalary(updatedUser.getSalary());
-        updUser.setPassword(SecurityConfig.passwordEncoder().encode(updatedUser.getPassword()));
+        updUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         updUser.getRoles().clear();
         updUser.setRoles(roleService.findRoleById(roles));
         userRepository.save(updUser);

@@ -2,11 +2,8 @@ package lev.working.BootSecurity.models;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
-
-
 import java.util.List;
 import java.util.Objects;
-
 
 @Entity
 public class Role implements GrantedAuthority {
@@ -23,6 +20,10 @@ public class Role implements GrantedAuthority {
     private List<User> users;
 
     public Role() {
+    }
+
+    public Role(String name) {
+        this.name = name;
     }
 
     public Long getId() {

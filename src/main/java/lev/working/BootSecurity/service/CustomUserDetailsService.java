@@ -25,13 +25,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-        
+
         return new org.springframework.security.core.userdetails.User(
-            user.getName(),
-            user.getPassword(),
-            user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList())
+                user.getName(),
+                user.getPassword(),
+                true,
+                true,
+                true,
+                user.isAccountNonLocked(),
+                user.getRoles().stream()
+                        .map(role -> new SimpleGrantedAuthority(role.getName()))
+                        .collect(Collectors.toList())
         );
     }
 }

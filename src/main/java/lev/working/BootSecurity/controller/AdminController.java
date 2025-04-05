@@ -1,64 +1,77 @@
 package lev.working.BootSecurity.controller;
 
+import lev.working.BootSecurity.models.Role;
 import lev.working.BootSecurity.models.User;
 import lev.working.BootSecurity.service.RoleService;
 import lev.working.BootSecurity.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 @Controller
-
 public class AdminController {
 
     private final UserService userService;
     private final RoleService roleService;
 
+    @Autowired
     public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
 
-    @GetMapping("/index")
-    public String getAllUsers(Model model) {
-        model.addAttribute("listUsers", userService.findAll());
-        return "index";
-    }
-
-    @PostMapping("/update")
-    public String updateUser(@ModelAttribute("user") User user,
-                             @RequestParam(value = "roles", required = false) List<Long> rolesId,
-                             @RequestParam(value = "id") Long id)
-    {
-        roleService.findRoleById(rolesId);
-        user.setRoles(roleService.findRoleById(rolesId));
-        userService.update(user, rolesId, id);
-        return "redirect:/index";
-    }
-
-    @PostMapping("/delete")
-    public String delete(@RequestParam("id") Long id, Model model) {
-        model.addAttribute("user", userService.findById(id));
-        userService.delete(id);
-        return "redirect:/index";
-    }
-
-    @GetMapping("/update")
-    public String showUpdateForm(@RequestParam("id") Long id, Model model, @ModelAttribute("user") User user) {
-        model.addAttribute("user", userService.findById(id));
-        model.addAttribute("role_all", roleService.getRoles());
-        return "update";
-    }
-
     @GetMapping("/admin")
-    public String showAdminForm(Model model) {
-        model.addAttribute("user", userService.getCurrentUser());
+    public String showAdminPanel(Model model) {
+        List<User> users = userService.findAll();
+        model.addAttribute("users", users);
         return "admin";
+    }
+
+    @PostMapping("/admin/delete/{id}")
+    public String deleteUser(@PathVariable Long id) {
+        userService.delete(id);
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/admin/toggleLock/{id}")
+    public String toggleUserLock(@PathVariable Long id) {
+        userService.toggleLock(id);
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/admin/edit/{id}")
+    public String editUser(@PathVariable Long id, Model model) {
+        User user = userService.findById(id);
+        if (user != null) {
+            model.addAttribute("user", user);
+            model.addAttribute("roles", roleService.getRoles());
+            return "editUser";
+        } else {
+            return "redirect:/admin?error=userNotFound";
+        }
+    }
+
+    @PostMapping("/admin/edit/{id}")
+    public String updateUser(@PathVariable Long id,
+                             @ModelAttribute("user") User updatedUser,
+                             @RequestParam(value = "roles", required = false) List<Long> roles,
+                             Model model) {
+        try {
+            if (roles == null || roles.isEmpty()) {
+                roles = roleService.getRolesByUserId(id)
+                        .stream()
+                        .map(Role::getId)
+                        .collect(Collectors.toList());
+            }
+
+            userService.update(updatedUser, roles, id);
+            return "redirect:/admin";
+        } catch (Exception e) {
+            model.addAttribute("error", "Ошибка обновления пользователя.");
+            return "editUser";
+        }
     }
 }

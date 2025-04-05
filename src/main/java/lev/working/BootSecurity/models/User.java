@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,8 +16,10 @@ public class User implements UserDetails {
 
     private String name;
     private String jobFunction;
-    private int salary;
+    private int age;
     private String password;
+
+    private boolean accountNonLocked = true;
 
     public String getJobFunction() {
         return jobFunction;
@@ -28,12 +29,12 @@ public class User implements UserDetails {
         this.jobFunction = function;
     }
 
-    public int getSalary() {
-        return salary;
+    public int getAge() {
+        return age;
     }
 
-    public void setSalary(int salary) {
-        this.salary = salary;
+    public void setAge(int salary) {
+        this.age = salary;
     }
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -86,7 +87,6 @@ public class User implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public String getUsername() {
         return name;
@@ -99,7 +99,11 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
+    }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
     }
 
     @Override
@@ -116,11 +120,11 @@ public class User implements UserDetails {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return salary == user.salary && Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(jobFunction, user.jobFunction) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
+        return age == user.age && Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(jobFunction, user.jobFunction) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, jobFunction, salary, password, roles);
+        return Objects.hash(id, name, jobFunction, age, password, roles);
     }
 }
